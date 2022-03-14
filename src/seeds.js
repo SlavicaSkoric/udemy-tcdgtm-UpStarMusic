@@ -3,8 +3,8 @@ import faker from 'faker';
 import { Db, Server } from 'mongodb';
 import { GENRES } from './constants';
 
-const MINIMUM_ARTISTS = 2;
-const ARTISTS_TO_ADD = 15;
+const MINIMUM_ARTISTS = 200;
+const ARTISTS_TO_ADD = 15000;
 
 let artistsCollection;
 const db = new Db('upstar_music', new Server('localhost', 27017));
@@ -13,15 +13,14 @@ db.open()
     artistsCollection = db.collection('artists');
     return artistsCollection.count({});
   })
-  .then(count => {
+  .then((count) => {
     if (count < MINIMUM_ARTISTS) {
       const artists = _.times(ARTISTS_TO_ADD, () => createArtist());
 
       artistsCollection.insertMany(artists);
     }
   })
-  .catch(e => console.log(e));
-
+  .catch((e) => console.log(e));
 
 function createArtist() {
   return {
@@ -34,7 +33,7 @@ function createArtist() {
     netWorth: randomBetween(0, 5000000),
     labelName: faker.company.companyName(),
     retired: faker.random.boolean(),
-    albums: getAlbums()
+    albums: getAlbums(),
   };
 }
 
@@ -48,7 +47,7 @@ function getAlbums() {
       copiesSold,
       numberTracks: randomBetween(1, 20),
       image: getAlbumImage(),
-      revenue: copiesSold * 12.99
+      revenue: copiesSold * 12.99,
     };
   });
 }
@@ -69,5 +68,5 @@ function randomEntry(array) {
 }
 
 function randomBetween(min, max) {
-  return ~~(Math.random() * (max-min)) + min;
+  return ~~(Math.random() * (max - min)) + min;
 }
